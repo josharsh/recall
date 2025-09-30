@@ -1,0 +1,26 @@
+# ZSH
+*.zwc
+*.zcompdump*
+
+# macOS
+.DS_Store
+._*
+
+# Test data
+test_data/
+*.db
+*.db-journal
+
+# Backups
+*.backup
+*.backup.*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
