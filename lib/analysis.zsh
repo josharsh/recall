@@ -2,11 +2,11 @@
 # analysis.zsh - Command pattern analysis and suggestions
 
 # Analyze command patterns and suggest aliases
-_projmem_suggest_aliases() {
+_recall_suggest_aliases() {
   local project_path="$1"
-  local min_count="${PROJMEM_MIN_COMMANDS:-5}"
+  local min_count="${RECALL_MIN_COMMANDS:-5}"
 
-  local suggestions=$(_projmem_db_get_top_commands "$project_path" 20 "$PROJMEM_LOOKBACK_DAYS")
+  local suggestions=$(_recall_db_get_top_commands "$project_path" 20 "$RECALL_LOOKBACK_DAYS")
 
   if [[ -z "$suggestions" ]]; then
     echo "Not enough command history to generate suggestions."
@@ -28,14 +28,14 @@ _projmem_suggest_aliases() {
     fi
 
     # Generate alias suggestion
-    local suggested_alias=$(_projmem_generate_alias_name "$command")
+    local suggested_alias=$(_recall_generate_alias_name "$command")
 
     if [[ -n "$suggested_alias" ]]; then
       printf "  \033[1;36m%-15s\033[0m → %s\n" "$suggested_alias" "$command"
       printf "    Used %d times | Avg: %.2fs | Success: %.0f%%\n\n" "$freq" "$avg_duration" "$success_rate"
 
       count=$((count + 1))
-      if (( count >= PROJMEM_MAX_SUGGESTIONS )); then
+      if (( count >= RECALL_MAX_SUGGESTIONS )); then
         break
       fi
     fi
@@ -44,12 +44,12 @@ _projmem_suggest_aliases() {
   if (( count == 0 )); then
     echo "  No suitable commands found for aliasing."
   else
-    echo "💡 Create alias: projmem alias <name> '<command>'"
+    echo "💡 Create alias: recall alias <name> '<command>'"
   fi
 }
 
 # Generate a sensible alias name from a command
-_projmem_generate_alias_name() {
+_recall_generate_alias_name() {
   local command="$1"
 
   # Extract base command
@@ -111,16 +111,16 @@ _projmem_generate_alias_name() {
 }
 
 # Create a project-specific alias
-_projmem_create_alias() {
+_recall_create_alias() {
   local project_path="$1"
   local alias_name="$2"
   local command="$3"
 
   # Get project ID
-  local project_id=$(_projmem_get_project_id "$project_path")
+  local project_id=$(_recall_get_project_id "$project_path")
 
   # Store in database
-  _projmem_db_upsert_alias "$project_id" "$alias_name" "$command"
+  _recall_db_upsert_alias "$project_id" "$alias_name" "$command"
 
   # Create actual alias in current shell
   alias "$alias_name"="$command"
@@ -130,11 +130,11 @@ _projmem_create_alias() {
 }
 
 # Show insights when entering a project
-_projmem_show_insights() {
+_recall_show_insights() {
   local project_path="$1"
 
   # Only show insights if we have enough data
-  local stats=$(_projmem_db_get_project_stats "$project_path")
+  local stats=$(_recall_db_get_project_stats "$project_path")
 
   if [[ -z "$stats" ]]; then
     return
@@ -148,7 +148,7 @@ _projmem_show_insights() {
   fi
 
   # Check if we have aliases for this project
-  local aliases=$(_projmem_db_get_aliases "$project_path")
+  local aliases=$(_recall_db_get_aliases "$project_path")
 
   if [[ -n "$aliases" ]]; then
     echo "\n💡 Project aliases available:"
@@ -160,11 +160,11 @@ _projmem_show_insights() {
 }
 
 # Show top commands for current project
-_projmem_show_top_commands() {
+_recall_show_top_commands() {
   local project_path="$1"
   local limit="${2:-10}"
 
-  local commands=$(_projmem_db_get_top_commands "$project_path" "$limit" "$PROJMEM_LOOKBACK_DAYS")
+  local commands=$(_recall_db_get_top_commands "$project_path" "$limit" "$RECALL_LOOKBACK_DAYS")
 
   if [[ -z "$commands" ]]; then
     echo "No command history for this project yet."

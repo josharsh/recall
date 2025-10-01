@@ -1,5 +1,5 @@
 #!/bin/bash
-# install.sh - Installation script for Project Memory
+# install.sh - Installation script for Recall
 
 set -e
 
@@ -30,7 +30,7 @@ print_warning() {
 
 # Header
 echo -e "\n${CYAN}╔═══════════════════════════════════════╗${NC}"
-echo -e "${CYAN}║${NC}  🧠  Project Memory Installer        ${CYAN}║${NC}"
+echo -e "${CYAN}║${NC}  🧠  Recall Installer        ${CYAN}║${NC}"
 echo -e "${CYAN}╚═══════════════════════════════════════╝${NC}\n"
 
 # Check requirements
@@ -60,11 +60,11 @@ INSTALL_PATH=""
 
 if [[ -d "$HOME/.oh-my-zsh" ]]; then
   INSTALL_METHOD="oh-my-zsh"
-  INSTALL_PATH="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/project-memory"
+  INSTALL_PATH="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/recall"
   print_success "Oh My Zsh detected"
 elif [[ -f "$HOME/.zshrc" ]]; then
   INSTALL_METHOD="manual"
-  INSTALL_PATH="$HOME/.zsh/project-memory"
+  INSTALL_PATH="$HOME/.zsh/recall"
   print_success "ZSH config detected (manual installation)"
 else
   print_error "Could not detect ZSH configuration"
@@ -112,7 +112,7 @@ ZSHRC="$HOME/.zshrc"
 
 if [[ "$INSTALL_METHOD" == "oh-my-zsh" ]]; then
   # Check if plugin is already in .zshrc
-  if grep -q "plugins=.*project-memory" "$ZSHRC"; then
+  if grep -q "plugins=.*recall" "$ZSHRC"; then
     print_success "Plugin already enabled in .zshrc"
   else
     # Try to add to plugins array
@@ -121,32 +121,32 @@ if [[ "$INSTALL_METHOD" == "oh-my-zsh" ]]; then
       cp "$ZSHRC" "${ZSHRC}.backup.$(date +%s)"
 
       # Add plugin to array
-      sed -i.tmp 's/plugins=(/plugins=(project-memory /' "$ZSHRC"
+      sed -i.tmp 's/plugins=(/plugins=(recall /' "$ZSHRC"
       rm -f "${ZSHRC}.tmp"
-      print_success "Added 'project-memory' to plugins in .zshrc"
+      print_success "Added 'recall' to plugins in .zshrc"
     else
       print_warning "Could not automatically add plugin to .zshrc"
-      echo -e "\n${CYAN}Please add 'project-memory' to your plugins array:${NC}"
-      echo -e "${YELLOW}plugins=(... project-memory)${NC}\n"
+      echo -e "\n${CYAN}Please add 'recall' to your plugins array:${NC}"
+      echo -e "${YELLOW}plugins=(... recall)${NC}\n"
     fi
   fi
 else
   # Manual installation - add source line
-  if grep -q "project-memory.plugin.zsh" "$ZSHRC"; then
+  if grep -q "recall.plugin.zsh" "$ZSHRC"; then
     print_success "Plugin already sourced in .zshrc"
   else
     # Backup .zshrc
     cp "$ZSHRC" "${ZSHRC}.backup.$(date +%s)"
 
     echo "" >> "$ZSHRC"
-    echo "# Project Memory - Smart command tracking" >> "$ZSHRC"
-    echo "source $INSTALL_PATH/project-memory.plugin.zsh" >> "$ZSHRC"
+    echo "# Recall - Smart command tracking" >> "$ZSHRC"
+    echo "source $INSTALL_PATH/recall.plugin.zsh" >> "$ZSHRC"
     print_success "Added source line to .zshrc"
   fi
 fi
 
 # Create data directory
-DATA_DIR="${PROJMEM_DATA_DIR:-$HOME/.local/share/project-memory}"
+DATA_DIR="${RECALL_DATA_DIR:-$HOME/.local/share/recall}"
 mkdir -p "$DATA_DIR"
 print_success "Data directory created: $DATA_DIR"
 
@@ -158,11 +158,12 @@ echo -e "${GREEN}╚════════════════════
 print_info "Next steps:"
 echo -e "  1. Restart your terminal or run: ${CYAN}source ~/.zshrc${NC}"
 echo -e "  2. Start using your terminal normally"
-echo -e "  3. After a while, run: ${CYAN}projmem suggest${NC}"
+echo -e "  3. After a while, run: ${CYAN}recall suggest${NC}"
 echo -e "\n${CYAN}Commands:${NC}"
-echo -e "  ${YELLOW}projmem stats${NC}      - View project statistics"
-echo -e "  ${YELLOW}projmem top${NC}        - Show top commands"
-echo -e "  ${YELLOW}projmem suggest${NC}    - Get alias suggestions"
-echo -e "  ${YELLOW}projmem help${NC}       - Show all commands"
-echo -e "\n${CYAN}Documentation:${NC} https://github.com/josharsh/project-memory"
+echo -e "  ${YELLOW}recall${NC}             - Quick project insights"
+echo -e "  ${YELLOW}recall stats${NC}       - View project statistics"
+echo -e "  ${YELLOW}recall top${NC}         - Show top commands"
+echo -e "  ${YELLOW}recall suggest${NC}     - Get alias suggestions"
+echo -e "  ${YELLOW}recall help${NC}        - Show all commands"
+echo -e "\n${CYAN}Documentation:${NC} https://github.com/josharsh/recall"
 echo -e "\nHappy coding! 🚀\n"

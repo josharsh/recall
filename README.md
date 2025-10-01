@@ -1,8 +1,8 @@
-# 🧠 Project Memory
+# 🧠 Recall
 
 > Smart command tracking and alias generation for ZSH - Learn your habits, optimize your workflow
 
-Project Memory is a ZSH plugin that automatically tracks the commands you run in each project and suggests intelligent aliases based on your usage patterns. Think of it as "autocomplete for your workflow" - it learns what you do and helps you do it faster.
+Recall is a ZSH plugin that automatically tracks the commands you run in each project and suggests intelligent aliases based on your usage patterns. Think of it as "autocomplete for your workflow" - it learns what you do and helps you do it faster.
 
 ## ✨ Features
 
@@ -17,7 +17,7 @@ Project Memory is a ZSH plugin that automatically tracks the commands you run in
 
 ```bash
 # After using "npm run dev" 50 times...
-$ projmem suggest
+$ recall suggest
 
 📊 Alias Suggestions for my-app:
 
@@ -27,9 +27,9 @@ $ projmem suggest
   nt              → npm test
     Used 23 times | Avg: 2.45s | Success: 95%
 
-💡 Create alias: projmem alias <name> '<command>'
+💡 Create alias: recall alias <name> '<command>'
 
-$ projmem alias nrd 'npm run dev'
+$ recall alias nrd 'npm run dev'
 ✅ Alias created: nrd → npm run dev
 ```
 
@@ -38,13 +38,13 @@ $ projmem alias nrd 'npm run dev'
 ### Oh My Zsh (Recommended)
 
 ```bash
-git clone https://github.com/josharsh/project-memory ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/project-memory
+git clone https://github.com/josharsh/recall ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/recall
 ```
 
 Add to your `.zshrc`:
 
 ```bash
-plugins=(... project-memory)
+plugins=(... recall)
 ```
 
 Reload your shell:
@@ -56,62 +56,62 @@ source ~/.zshrc
 ### Manual Installation
 
 ```bash
-git clone https://github.com/josharsh/project-memory ~/.zsh/project-memory
+git clone https://github.com/josharsh/recall ~/.zsh/recall
 ```
 
 Add to your `.zshrc`:
 
 ```bash
-source ~/.zsh/project-memory/project-memory.plugin.zsh
+source ~/.zsh/recall/recall.plugin.zsh
 ```
 
 ## 🚀 Usage
 
-Project Memory works automatically once installed - just use your terminal normally!
+Recall works automatically once installed - just use your terminal normally!
 
 ### Commands
 
 ```bash
 # Show project statistics
-projmem stats
+recall stats
 
 # View top commands
-projmem top [limit]
+recall top [limit]
 
 # Get alias suggestions
-projmem suggest
+recall suggest
 
 # Create an alias
-projmem alias <name> '<command>'
+recall alias <name> '<command>'
 
 # Clean old data
-projmem clean [days]
+recall clean [days]
 
 # Export data
-projmem export [format]  # json or csv
+recall export [format]  # json or csv
 
 # Disable/enable tracking
-projmem disable
-projmem enable
+recall disable
+recall enable
 ```
 
 ### Examples
 
 ```bash
 # See what commands you run most in this project
-projmem top 20
+recall top 20
 
 # Get suggestions based on your patterns
-projmem suggest
+recall suggest
 
 # Create a shortcut
-projmem alias gcm 'git commit -m'
+recall alias gcm 'git commit -m'
 
 # View project stats
-projmem stats
+recall stats
 
 # Clean data older than 30 days
-projmem clean 30
+recall clean 30
 ```
 
 ## ⚙️ Configuration
@@ -119,20 +119,20 @@ projmem clean 30
 Add these to your `.zshrc` **before** the plugin loads:
 
 ```bash
-# Where to store data (default: ~/.local/share/project-memory)
-export PROJMEM_DATA_DIR="$HOME/.project-memory"
+# Where to store data (default: ~/.local/share/recall)
+export RECALL_DATA_DIR="$HOME/.recall"
 
 # Minimum command runs before suggesting alias (default: 5)
-export PROJMEM_MIN_COMMANDS=10
+export RECALL_MIN_COMMANDS=10
 
 # Days to look back for analysis (default: 30)
-export PROJMEM_LOOKBACK_DAYS=60
+export RECALL_LOOKBACK_DAYS=60
 
 # Max suggestions to show (default: 3)
-export PROJMEM_MAX_SUGGESTIONS=5
+export RECALL_MAX_SUGGESTIONS=5
 
 # Enable/disable tracking (default: true)
-export PROJMEM_ENABLED=true
+export RECALL_ENABLED=true
 ```
 
 ## 🎯 How It Works
@@ -140,7 +140,7 @@ export PROJMEM_ENABLED=true
 1. **Tracking**: Uses ZSH hooks (`preexec`, `precmd`, `chpwd`) to capture commands
 2. **Storage**: Saves to SQLite with project context, timestamps, exit codes, duration
 3. **Analysis**: Analyzes patterns - frequency, command length, success rate
-4. **Suggestions**: Generates smart alias names based on common patterns
+4. **Suggestions**: Generates smart alias names based on common patterns (npm run dev → nrd)
 5. **Context**: Shows relevant aliases when you enter a project directory
 
 ### What Gets Tracked?
@@ -160,7 +160,7 @@ Simple navigation commands are ignored to avoid noise:
 
 ## 🧪 Smart Alias Generation
 
-Project Memory recognizes common patterns:
+Recall recognizes common patterns:
 
 | Pattern | Example | Generated Alias |
 |---------|---------|-----------------|
@@ -182,13 +182,13 @@ Project Memory recognizes common patterns:
 
 - **100% Local** - All data stays on your machine
 - **No Network Calls** - Zero telemetry, zero tracking
-- **SQLite Database** - Located at `~/.local/share/project-memory/history.db`
-- **Easy Export** - Export your data anytime with `projmem export`
-- **Easy Cleanup** - Delete old data with `projmem clean`
+- **SQLite Database** - Located at `~/.local/share/recall/history.db`
+- **Easy Export** - Export your data anytime with `recall export`
+- **Easy Cleanup** - Delete old data with `recall clean`
 
 ## 🤝 Contributing
 
-Contributions welcome! Check out the [issues](https://github.com/josharsh/project-memory/issues) or submit a PR.
+Contributions welcome! Check out the [issues](https://github.com/josharsh/recall/issues) or submit a PR.
 
 ## 📝 License
 
@@ -210,7 +210,7 @@ Inspired by:
 which sqlite3
 
 # Verify plugin is in the right directory
-ls ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/project-memory
+ls ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/recall
 
 # Check .zshrc has plugin enabled
 cat ~/.zshrc | grep "plugins="
@@ -220,20 +220,20 @@ cat ~/.zshrc | grep "plugins="
 
 ```bash
 # Check if enabled
-echo $PROJMEM_ENABLED
+echo $RECALL_ENABLED
 
 # Test database
-sqlite3 ~/.local/share/project-memory/history.db "SELECT COUNT(*) FROM commands;"
+sqlite3 ~/.local/share/recall/history.db "SELECT COUNT(*) FROM commands;"
 ```
 
 ### Performance issues?
 
 ```bash
 # Clean old data
-projmem clean 30
+recall clean 30
 
 # Disable if needed
-projmem disable
+recall disable
 ```
 
 ---

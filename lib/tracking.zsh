@@ -2,26 +2,26 @@
 # tracking.zsh - Command tracking logic
 
 # Track a command execution
-_projmem_track_command() {
+_recall_track_command() {
   local project_path="$1"
   local command="$2"
   local exit_code="$3"
   local duration="$4"
 
   # Skip certain commands
-  if _projmem_should_skip_command "$command"; then
+  if _recall_should_skip_command "$command"; then
     return
   fi
 
   # Get or create project
-  local project_id=$(_projmem_get_project_id "$project_path")
+  local project_id=$(_recall_get_project_id "$project_path")
 
   # Insert command record
-  _projmem_db_insert_command "$project_id" "$command" "$exit_code" "$duration"
+  _recall_db_insert_command "$project_id" "$command" "$exit_code" "$duration"
 }
 
 # Determine if command should be skipped
-_projmem_should_skip_command() {
+_recall_should_skip_command() {
   local command="$1"
 
   # Skip empty commands
@@ -35,7 +35,7 @@ _projmem_should_skip_command() {
     "^exit$"
     "^clear$"
     "^history"
-    "^projmem"
+    "^recall"
     "^echo "
     "^cat "
     "^less "
@@ -54,7 +54,7 @@ _projmem_should_skip_command() {
 }
 
 # Get project root (tries to find git root, falls back to cwd)
-_projmem_get_project_root() {
+_recall_get_project_root() {
   local current_dir="$1"
 
   # Try to find git root
@@ -90,7 +90,7 @@ _projmem_get_project_root() {
 }
 
 # Normalize command for better grouping
-_projmem_normalize_command() {
+_recall_normalize_command() {
   local command="$1"
 
   # Remove leading/trailing whitespace

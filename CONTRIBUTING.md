@@ -1,4 +1,4 @@
-# Contributing to Project Memory
+# Contributing to Recall
 
 First off, thanks for taking the time to contribute! 🎉
 
@@ -39,11 +39,11 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/project-memory.git
-cd project-memory
+git clone https://github.com/YOUR_USERNAME/recall.git
+cd recall
 
 # Test locally
-source project-memory.plugin.zsh
+source recall.plugin.zsh
 
 # Make changes and test
 ```
@@ -103,8 +103,8 @@ Update documentation for configuration options
 ## Project Structure
 
 ```
-project-memory/
-├── project-memory.plugin.zsh  # Main entry point
+recall/
+├── recall.plugin.zsh  # Main entry point
 ├── lib/
 │   ├── database.zsh          # SQLite operations
 │   ├── tracking.zsh          # Command tracking logic
