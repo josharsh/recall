@@ -1,22 +1,22 @@
 # 🧠 Recall
 
-> Smart command tracking and alias generation for ZSH - Learn your habits, optimize your workflow
+**Learn your workflow, optimize your commands**
 
-Recall is a ZSH plugin that automatically tracks the commands you run in each project and suggests intelligent aliases based on your usage patterns. Think of it as "autocomplete for your workflow" - it learns what you do and helps you do it faster.
+Recall automatically tracks the commands you run in each project and suggests intelligent aliases based on your usage patterns. Stop typing the same long commands - let Recall learn your habits and speed up your workflow.
 
-## ✨ Features
+## ✨ Why Recall?
 
-- 📊 **Automatic Command Tracking** - Records every command you run, per-project
-- 🎯 **Smart Alias Suggestions** - Analyzes patterns and suggests time-saving aliases
-- 🚀 **Project-Aware Context** - Shows relevant shortcuts when you `cd` into directories
-- ⚡ **Performance Metrics** - Tracks execution time, success rate, and usage frequency
-- 💾 **SQLite Storage** - Fast, reliable, zero-dependency storage
-- 🔒 **Privacy-First** - All data stays local on your machine
+- 🎯 **Zero configuration** - Works automatically after installation
+- 📊 **Smart suggestions** - Analyzes patterns and recommends time-saving aliases
+- 🚀 **Project-aware** - Tracks commands per project/directory
+- ⚡ **Fast & lightweight** - Async tracking, no terminal slowdown
+- 🔒 **Privacy-first** - All data stays local on your machine
+- 💾 **SQLite powered** - Fast, reliable, zero-dependency storage
 
-## 🎬 Demo
+## 🎬 See It In Action
 
 ```bash
-# After using "npm run dev" 50 times...
+# After you've used "npm run dev" a few times...
 $ recall suggest
 
 📊 Alias Suggestions for my-app:
@@ -27,217 +27,158 @@ $ recall suggest
   nt              → npm test
     Used 23 times | Avg: 2.45s | Success: 95%
 
-💡 Create alias: recall alias <name> '<command>'
-
+# Create the alias
 $ recall alias nrd 'npm run dev'
 ✅ Alias created: nrd → npm run dev
+
+# Now just type:
+$ nrd
 ```
 
 ## 📦 Installation
 
-### Oh My Zsh (Recommended)
+### Homebrew (Easiest)
+
+```bash
+brew install josharsh/tap/recall
+```
+
+Add to your `~/.zshrc`:
+```bash
+source $(brew --prefix)/share/zsh/site-functions/_recall_loader
+```
+
+### Oh My Zsh
 
 ```bash
 git clone https://github.com/josharsh/recall ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/recall
 ```
 
-Add to your `.zshrc`:
-
+Add to your `~/.zshrc`:
 ```bash
 plugins=(... recall)
 ```
 
-Reload your shell:
-
-```bash
-source ~/.zshrc
-```
-
-### Manual Installation
+### Manual
 
 ```bash
 git clone https://github.com/josharsh/recall ~/.zsh/recall
 ```
 
-Add to your `.zshrc`:
-
+Add to your `~/.zshrc`:
 ```bash
 source ~/.zsh/recall/recall.plugin.zsh
 ```
 
-## 🚀 Usage
+**Then reload your shell:**
+```bash
+source ~/.zshrc
+```
 
-Recall works automatically once installed - just use your terminal normally!
+## 🚀 Quick Start
 
-### Commands
+Recall works automatically - just use your terminal as normal!
 
 ```bash
-# Show project statistics
-recall stats
+recall              # Show quick insights for current project
+recall suggest      # Get alias recommendations
+recall stats        # View detailed statistics
+recall top 20       # Show your top 20 commands
+recall help         # See all commands
+```
 
-# View top commands
-recall top [limit]
+### Create Aliases
 
-# Get alias suggestions
+```bash
+# Recall suggests, you decide
 recall suggest
 
 # Create an alias
-recall alias <name> '<command>'
-
-# Clean old data
-recall clean [days]
-
-# Export data
-recall export [format]  # json or csv
-
-# Disable/enable tracking
-recall disable
-recall enable
-```
-
-### Examples
-
-```bash
-# See what commands you run most in this project
-recall top 20
-
-# Get suggestions based on your patterns
-recall suggest
-
-# Create a shortcut
+recall alias nrd 'npm run dev'
 recall alias gcm 'git commit -m'
+recall alias dcu 'docker compose up'
 
-# View project stats
-recall stats
-
-# Clean data older than 30 days
-recall clean 30
+# Use them immediately
+nrd
 ```
 
-## ⚙️ Configuration
+## 🧠 How It Works
 
-Add these to your `.zshrc` **before** the plugin loads:
+Recall uses ZSH hooks to track every command you run:
+
+1. **Tracks** - Captures command, timestamp, duration, exit code
+2. **Stores** - Saves to local SQLite database per project
+3. **Analyzes** - Finds patterns in your most-used commands
+4. **Suggests** - Recommends smart, short aliases
+5. **Learns** - Gets smarter as you work
+
+**What gets tracked?** Everything except simple navigation (`cd`, `ls`, `pwd`)
+
+**Where's the data?** `~/.local/share/recall/history.db` (100% local, private)
+
+## 🎯 Smart Alias Suggestions
+
+Recall recognizes common patterns and suggests intuitive aliases:
+
+| Command | Suggested Alias | Pattern |
+|---------|----------------|---------|
+| `npm run dev` | `nrd` | npm run → nr + first letter |
+| `git commit -m` | `gcm` | git → g + command initials |
+| `docker compose up` | `dcu` | docker compose → dc + command |
+| `npm install` | `ni` | npm → n + command initial |
+| `cargo test` | `ct` | cargo → c + command initial |
+
+## ⚙️ Configuration (Optional)
+
+Customize behavior in your `~/.zshrc`:
 
 ```bash
-# Where to store data (default: ~/.local/share/recall)
-export RECALL_DATA_DIR="$HOME/.recall"
-
-# Minimum command runs before suggesting alias (default: 5)
-export RECALL_MIN_COMMANDS=10
-
-# Days to look back for analysis (default: 30)
-export RECALL_LOOKBACK_DAYS=60
-
-# Max suggestions to show (default: 3)
-export RECALL_MAX_SUGGESTIONS=5
-
-# Enable/disable tracking (default: true)
-export RECALL_ENABLED=true
+export RECALL_MIN_COMMANDS=3       # Suggest after 3 uses (default: 5)
+export RECALL_LOOKBACK_DAYS=60     # Analyze last 60 days (default: 30)
+export RECALL_MAX_SUGGESTIONS=5    # Show 5 suggestions (default: 3)
 ```
-
-## 🎯 How It Works
-
-1. **Tracking**: Uses ZSH hooks (`preexec`, `precmd`, `chpwd`) to capture commands
-2. **Storage**: Saves to SQLite with project context, timestamps, exit codes, duration
-3. **Analysis**: Analyzes patterns - frequency, command length, success rate
-4. **Suggestions**: Generates smart alias names based on common patterns (npm run dev → nrd)
-5. **Context**: Shows relevant aliases when you enter a project directory
-
-### What Gets Tracked?
-
-- Full command text
-- Project/directory context
-- Execution timestamp
-- Exit code (success/failure)
-- Duration (how long it took)
-
-### What Gets Skipped?
-
-Simple navigation commands are ignored to avoid noise:
-- `cd`, `ls`, `pwd`
-- `clear`, `exit`, `history`
-- File viewers (`cat`, `less`, `more`)
-
-## 🧪 Smart Alias Generation
-
-Recall recognizes common patterns:
-
-| Pattern | Example | Generated Alias |
-|---------|---------|-----------------|
-| npm run | `npm run dev` | `nrd` |
-| npm | `npm install` | `ni` |
-| git | `git status` | `gst` |
-| docker compose | `docker compose up` | `dcu` |
-| docker | `docker ps` | `dps` |
-| make | `make build` | `mbu` |
-| cargo | `cargo test` | `ct` |
 
 ## 🔧 Requirements
 
 - ZSH shell
-- SQLite3 (pre-installed on macOS)
-- Oh My Zsh (optional but recommended)
+- SQLite3 (pre-installed on macOS, Linux)
 
-## 📊 Privacy & Data
+## 📊 Privacy & Security
 
-- **100% Local** - All data stays on your machine
-- **No Network Calls** - Zero telemetry, zero tracking
-- **SQLite Database** - Located at `~/.local/share/recall/history.db`
-- **Easy Export** - Export your data anytime with `recall export`
-- **Easy Cleanup** - Delete old data with `recall clean`
-
-## 🤝 Contributing
-
-Contributions welcome! Check out the [issues](https://github.com/josharsh/recall/issues) or submit a PR.
-
-## 📝 License
-
-MIT License - see [LICENSE](LICENSE) for details
-
-## 🙏 Inspiration
-
-Inspired by:
-- [Atuin](https://github.com/atuinsh/atuin) - Shell history in SQLite
-- [zsh-histdb](https://github.com/larkery/zsh-histdb) - Better zsh history
-- [Warp](https://www.warp.dev/) - Modern terminal workflows
+- ✅ **100% local** - All data stays on your machine
+- ✅ **No telemetry** - Zero network calls, zero tracking
+- ✅ **Transparent** - SQLite database at `~/.local/share/recall/history.db`
+- ✅ **Your control** - Export, clean, or delete anytime
 
 ## 🐛 Troubleshooting
 
-### Plugin not loading?
-
+**Not tracking commands?**
 ```bash
-# Check if sqlite3 is available
-which sqlite3
-
-# Verify plugin is in the right directory
-ls ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/recall
-
-# Check .zshrc has plugin enabled
-cat ~/.zshrc | grep "plugins="
+echo $RECALL_ENABLED  # Should show "true"
 ```
 
-### Commands not being tracked?
-
+**Want to check the database?**
 ```bash
-# Check if enabled
-echo $RECALL_ENABLED
-
-# Test database
 sqlite3 ~/.local/share/recall/history.db "SELECT COUNT(*) FROM commands;"
 ```
 
-### Performance issues?
-
+**Need to clean up old data?**
 ```bash
-# Clean old data
-recall clean 30
-
-# Disable if needed
-recall disable
+recall clean 30  # Remove data older than 30 days
 ```
+
+## 🤝 Contributing
+
+Contributions welcome! Please check [CONTRIBUTING.md](CONTRIBUTING.md) or open an [issue](https://github.com/josharsh/recall/issues).
+
+## 📝 License
+
+MIT - see [LICENSE](LICENSE)
+
+## 🙏 Credits
+
+Inspired by [Atuin](https://github.com/atuinsh/atuin), [zsh-histdb](https://github.com/larkery/zsh-histdb), and [Warp](https://www.warp.dev/)
 
 ---
 
-**Made with 🧠 by [Harsh](https://github.com/josharsh)**
-
-*Like this? Give it a ⭐ on GitHub!*
+**Made with 🧠 by [Harsh](https://github.com/josharsh)** • [⭐ Star on GitHub](https://github.com/josharsh/recall)
