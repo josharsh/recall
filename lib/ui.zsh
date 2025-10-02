@@ -59,7 +59,8 @@ USAGE:
 COMMANDS:
   (none)                    Quick project insights
   stats [path]              Show statistics for current or specified project
-  top [path] [limit]        Show top commands (default: 10)
+  top [limit]               Show top N commands (default: 10)
+  top [path] [limit]        Show top commands for specific path
   suggest | learn [path]    Suggest aliases based on command patterns
   alias <name> <command>    Create a project-specific alias
   clean [days]              Remove command data older than N days (default: 90)
@@ -71,7 +72,9 @@ COMMANDS:
 EXAMPLES:
   recall                   # Quick insights for current project
   recall stats             # Show detailed stats
+  recall top               # Show top 10 commands (default)
   recall top 20            # Show top 20 commands
+  recall top /path 15      # Show top 15 commands for specific path
   recall suggest           # Get alias suggestions
   recall alias dev "npm run dev"
   recall clean 30          # Clean data older than 30 days

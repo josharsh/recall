@@ -76,7 +76,22 @@ recall() {
       _recall_suggest_aliases "${2:-$PWD}"
       ;;
     top)
-      _recall_show_top_commands "${2:-$PWD}" "${3:-10}"
+      # Smart argument parsing: if $2 is a number, treat it as limit, otherwise as path
+      local path="$PWD"
+      local limit="10"
+
+      if [[ -n "$2" ]]; then
+        if [[ "$2" =~ ^[0-9]+$ ]]; then
+          # $2 is a number, use it as limit
+          limit="$2"
+        else
+          # $2 is a path
+          path="$2"
+          limit="${3:-10}"
+        fi
+      fi
+
+      _recall_show_top_commands "$path" "$limit"
       ;;
     alias)
       if [[ -n "$2" && -n "$3" ]]; then
