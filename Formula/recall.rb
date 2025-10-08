@@ -1,10 +1,10 @@
 class Recall < Formula
   desc "Smart command tracking and alias generation for ZSH - Learn your workflow, optimize your commands"
   homepage "https://github.com/josharsh/recall"
-  url "https://github.com/josharsh/recall/archive/refs/tags/v0.1.0.tar.gz"
+  url "https://github.com/josharsh/recall/archive/refs/tags/v0.1.2.tar.gz"
   sha256 "PLACEHOLDER_UPDATE_AFTER_GITHUB_RELEASE"
   license "MIT"
-  version "0.1.0"
+  version "0.1.2"
 
   depends_on "zsh"
 
@@ -25,6 +25,49 @@ class Recall < Formula
       source "#{prefix}/recall.plugin.zsh"
     EOS
 
+    # Create setup helper script
+    bin.mkpath
+    (bin/"recall-setup").write <<~EOS
+      #!/bin/bash
+      # Recall setup helper - adds Recall to your .zshrc
+
+      ZSHRC="$HOME/.zshrc"
+      LOADER_LINE='source $(brew --prefix)/share/zsh/site-functions/_recall_loader'
+
+      echo "🧠 Recall Setup Helper"
+      echo ""
+
+      # Check if already configured
+      if grep -q "_recall_loader" "$ZSHRC" 2>/dev/null; then
+        echo "✅ Recall is already configured in $ZSHRC"
+        exit 0
+      fi
+
+      echo "This will add the following line to $ZSHRC:"
+      echo "  $LOADER_LINE"
+      echo ""
+      read -p "Continue? [Y/n] " -n 1 -r
+      echo ""
+
+      if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+        # Backup .zshrc
+        [ -f "$ZSHRC" ] && cp "$ZSHRC" "${ZSHRC}.backup.$(date +%s)"
+
+        # Add to .zshrc
+        echo "" >> "$ZSHRC"
+        echo "# Recall - Smart command tracking" >> "$ZSHRC"
+        echo "$LOADER_LINE" >> "$ZSHRC"
+
+        echo "✅ Added to $ZSHRC"
+        echo ""
+        echo "Run 'source ~/.zshrc' or open a new terminal to start using Recall!"
+      else
+        echo "⚠️  Skipped. Add this line manually to your .zshrc:"
+        echo "  $LOADER_LINE"
+      fi
+    EOS
+    chmod 0755, bin/"recall-setup"
+
     # Install man page (future)
     # man1.install "docs/recall.1"
 
@@ -37,26 +80,28 @@ class Recall < Formula
     <<~EOS
       🧠 Recall installed successfully!
 
-      Add to your ~/.zshrc:
+      ⚡️ Quick Setup (recommended):
+        Run this command to automatically configure your .zshrc:
+          recall-setup
 
-        # For Homebrew installation:
-        source $(brew --prefix)/share/zsh/site-functions/_recall_loader
+      📝 Manual Setup:
+        Add to your ~/.zshrc:
+          source $(brew --prefix)/share/zsh/site-functions/_recall_loader
 
-        # Or if you use Oh My Zsh, add to plugins array:
-        plugins=(... recall)
+        Or if you use Oh My Zsh, add to plugins array:
+          plugins=(... recall)
 
-      Then restart your terminal or run:
+      🔄 Then restart your terminal or run:
         source ~/.zshrc
 
-      Quick start:
+      🚀 Quick start:
         recall              # Show project insights
         recall stats        # Detailed statistics
         recall suggest      # Get alias suggestions
         recall help         # Full documentation
 
-      Data stored in: ~/.local/share/recall
-
-      Documentation: https://github.com/josharsh/recall
+      📊 Data stored in: ~/.local/share/recall
+      📖 Documentation: https://github.com/josharsh/recall
     EOS
   end
 
